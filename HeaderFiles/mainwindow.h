@@ -5,7 +5,7 @@
 #include <QMessageBox>
 
 #include "HeaderFiles/usersdbmanager.h"
-
+#include "HeaderFiles/homewindow.h"
 
 namespace Ui {
 class MainWindow;
@@ -30,15 +30,19 @@ private slots:
 
     void on_exitButton_clicked();
 
+signals:
+    void setUName(QString uName);
+
 
 private:
     Ui::MainWindow *ui;
+
     QMessageBox mainMsgBox;
 
     QString username;
     QString password;
 
-
+    HomeWindow *home = new HomeWindow();
 
 };
 
