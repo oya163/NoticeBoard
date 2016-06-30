@@ -23,7 +23,7 @@ bool UsersDBManager::checkLogin(QString uname, QString pwd){
     qDebug() << uname << " " << pwd << endl;
 
     QSqlQuery checkQuery;
-    checkQuery.prepare("SELECT COUNT(*) FROM users WHERE USERNAME = (:uname) AND PASSWORD = (:pwd)");
+    checkQuery.prepare("SELECT COUNT(*) FROM USERS WHERE USERNAME = (:uname) AND PASSWORD = (:pwd)");
     checkQuery.bindValue(":uname",uname);
     checkQuery.bindValue(":pwd",pwd);
     checkQuery.exec();
@@ -35,4 +35,17 @@ bool UsersDBManager::checkLogin(QString uname, QString pwd){
     }
     return false;
 }
+
+bool UsersDBManager::insertNotice(QString createdTo, QString msg, QString createdBy){
+    QSqlQuery insertQuery;
+    insertQuery.prepare("INSERT INTO NOTICE (CREATEDTO, MESSAGE, CREATEDBY) VALUES((:CREATEDTO),(:MESSAGE),(:CREATEDBY)");
+    insertQuery.bindValue(":CREATEDTO", createdTo);
+    insertQuery.bindValue(":MESSAGE", msg);
+    insertQuery.bindValue(":CREATEDBY", createdBy);
+    if(insertQuery.exec()){
+        return true;
+    }
+    return false;
+}
+
 

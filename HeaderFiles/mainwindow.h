@@ -15,6 +15,17 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+private:
+
+    Ui::MainWindow *ui;
+
+    QMessageBox mainMsgBox;
+
+    QString username;
+    QString password;
+
+    HomeWindow *home = new HomeWindow();
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -34,15 +45,6 @@ signals:
     void setUName(QString uName);
 
 
-private:
-    Ui::MainWindow *ui;
-
-    QMessageBox mainMsgBox;
-
-    QString username;
-    QString password;
-
-    HomeWindow *home = new HomeWindow();
 
 };
 

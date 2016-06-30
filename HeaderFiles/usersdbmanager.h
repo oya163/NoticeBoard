@@ -16,9 +16,16 @@ private:
 
 public:
     UsersDBManager();
+
+    //CRUD operation relevant with USERS table
     bool checkLogin(QString uname, QString pwd);
 
-
+    //CRUD operation relevant with NOTICE table
+    void displayNotice();
+    bool insertNotice(QString createdTo, QString msg, QString createdBy);
+    void checkNotice(int noticeID);
+    void updateNotice(int noticeID, QString createdTo, QString msg, QString createdBy);
+    void deleteNotice(int noticeID);
 };
 
 #endif // USERSDBMANAGER_H

@@ -1,6 +1,6 @@
+#include "HeaderFiles/mainwindow.h"
 #include "HeaderFiles/homewindow.h"
 #include "ui_homewindow.h"
-
 
 HomeWindow::HomeWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -21,6 +21,6 @@ void HomeWindow::on_logout_button_clicked()
 }
 
 void HomeWindow::setWelcomeLabel(QString uName){
-    uih->wcLabel->setText(uName);
+    uih->wcName->setText(uName);
 }
 
