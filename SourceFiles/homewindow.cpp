@@ -22,12 +22,13 @@ void HomeWindow::on_logout_button_clicked()
 }
 
 void HomeWindow::setWelcomeLabel(QString uName){
+    userName = uName;
     uih->wcName->setText(uName);
 }
 
-
 void HomeWindow::on_createButton_clicked()
 {
-    CreateWindow *create = new CreateWindow();
+    QString un = userName;
+    CreateWindow *create = new CreateWindow(0,un);
     create->show();
 }
