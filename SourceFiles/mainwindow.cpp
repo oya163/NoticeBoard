@@ -1,5 +1,6 @@
-#include "HeaderFiles/mainwindow.h"
 #include "ui_mainwindow.h"
+#include "HeaderFiles/mainwindow.h"
+#include "HeaderFiles/homewindow.h"
 
 #include <QDebug>
 
@@ -8,8 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //passes the value of username from MainWindow to Welcome Label of HomeWindow
-    connect(this,SIGNAL(setUName(QString)),home,SLOT(setWelcomeLabel(QString)));
+
 }
 
 MainWindow::~MainWindow()
@@ -36,6 +36,10 @@ void MainWindow::setPassword(QString inPassword){
 void MainWindow::on_loginButon_clicked()
 {
     UsersDBManager udb;
+    HomeWindow *home = new HomeWindow();
+
+    //passes the value of username from MainWindow to Welcome Label of HomeWindow
+    connect(this,SIGNAL(setUName(QString)),home,SLOT(setWelcomeLabel(QString)));
 
     //Checking the input username and password are give or not
     if(ui->userName_txt->text().isEmpty() || ui->password_txt->text().isEmpty()){
@@ -47,13 +51,11 @@ void MainWindow::on_loginButon_clicked()
 
     bool successLogin = udb.checkLogin(getUserName(),getPassword());
 
-
-
     if(successLogin){
         //display another home window
         emit setUName(ui->userName_txt->text());
-
         home->show();
+        this->close();
     }
     else
     {

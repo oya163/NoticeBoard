@@ -4,8 +4,9 @@
 #include <QMainWindow>
 #include <QMessageBox>
 
-#include "HeaderFiles/usersdbmanager.h"
 #include "HeaderFiles/homewindow.h"
+#include "HeaderFiles/usersdbmanager.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -14,17 +15,6 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
-private:
-
-    Ui::MainWindow *ui;
-
-    QMessageBox mainMsgBox;
-
-    QString username;
-    QString password;
-
-    HomeWindow *home = new HomeWindow();
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -44,7 +34,13 @@ private slots:
 signals:
     void setUName(QString uName);
 
+private:
 
+    Ui::MainWindow *ui;
+    QMessageBox mainMsgBox;
+
+    QString username;
+    QString password;
 
 };
 
