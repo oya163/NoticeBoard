@@ -2,6 +2,9 @@
 #define HOMEWINDOW_H
 
 #include <QMainWindow>
+#include <QtWidgets>
+#include <QtSql>
+
 #include "mainwindow.h"
 
 namespace Ui{
@@ -14,6 +17,7 @@ class HomeWindow : public QMainWindow{
 public:
     explicit HomeWindow(QWidget *parent = 0);
     virtual ~HomeWindow();
+    void displayNotice();
 
 public slots:
     void setWelcomeLabel(QString uName);
@@ -25,6 +29,7 @@ private slots:
 
 private:
     Ui::HomeWindow *uih;
+    QSqlTableModel *model;
     QString userName;
 
 };
