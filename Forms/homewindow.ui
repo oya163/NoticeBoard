@@ -56,6 +56,12 @@
      <property name="text">
       <string>Logout</string>
      </property>
+     <property name="autoDefault">
+      <bool>true</bool>
+     </property>
+     <property name="default">
+      <bool>false</bool>
+     </property>
     </widget>
     <widget class="QPushButton" name="myProfile_button">
      <property name="geometry">
@@ -68,6 +74,12 @@
      </property>
      <property name="text">
       <string>My Profile</string>
+     </property>
+     <property name="autoDefault">
+      <bool>true</bool>
+     </property>
+     <property name="default">
+      <bool>false</bool>
      </property>
     </widget>
     <widget class="QLabel" name="wcLabel">
@@ -131,6 +143,12 @@
      <property name="text">
       <string>Create</string>
      </property>
+     <property name="autoDefault">
+      <bool>true</bool>
+     </property>
+     <property name="default">
+      <bool>false</bool>
+     </property>
     </widget>
     <widget class="QPushButton" name="updateButton">
      <property name="geometry">
@@ -143,6 +161,12 @@
      </property>
      <property name="text">
       <string>Update</string>
+     </property>
+     <property name="autoDefault">
+      <bool>true</bool>
+     </property>
+     <property name="default">
+      <bool>false</bool>
      </property>
     </widget>
     <widget class="QPushButton" name="delButton">
@@ -157,6 +181,12 @@
      <property name="text">
       <string>Delete</string>
      </property>
+     <property name="autoDefault">
+      <bool>true</bool>
+     </property>
+     <property name="default">
+      <bool>false</bool>
+     </property>
     </widget>
     <widget class="QPushButton" name="readButton">
      <property name="geometry">
@@ -169,6 +199,12 @@
      </property>
      <property name="text">
       <string>Read</string>
+     </property>
+     <property name="autoDefault">
+      <bool>true</bool>
+     </property>
+     <property name="default">
+      <bool>false</bool>
      </property>
     </widget>
    </widget>
@@ -198,6 +234,15 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>createButton</tabstop>
+  <tabstop>updateButton</tabstop>
+  <tabstop>delButton</tabstop>
+  <tabstop>readButton</tabstop>
+  <tabstop>myProfile_button</tabstop>
+  <tabstop>logout_button</tabstop>
+  <tabstop>tableView</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
