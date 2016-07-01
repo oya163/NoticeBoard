@@ -26,6 +26,11 @@ public:
     void checkNotice(int noticeID);
     void updateNotice(int noticeID, QString createdTo, QString msg, QString createdBy);
     void deleteNotice(int noticeID);
+
+    //Connects the combo box of Create window to USERNAME column of USERS table
+    QSqlQueryModel* loadEmployeeCombo();
+
+    void closeConnection();
 };
 
 #endif // USERSDBMANAGER_H

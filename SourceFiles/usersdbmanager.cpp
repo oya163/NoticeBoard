@@ -1,5 +1,4 @@
 #include "HeaderFiles/usersdbmanager.h"
-#include <algorithm>
 
 UsersDBManager::UsersDBManager()
 {
@@ -15,6 +14,7 @@ UsersDBManager::UsersDBManager()
     {
        qDebug() << "Database: connection ok";
     }
+
 }
 
 //Check the login credentials are correct or not
@@ -46,6 +46,21 @@ bool UsersDBManager::insertNotice(QString createdTo, QString msg, QString create
         return true;
     }
     return false;
+}
+
+QSqlQueryModel* UsersDBManager::loadEmployeeCombo(){
+    QSqlQueryModel *model = new QSqlQueryModel();
+    QSqlQuery getUsersQuery;
+    getUsersQuery.prepare("SELECT USERNAME FROM USERS");
+    if(getUsersQuery.exec()){
+        model->setQuery(getUsersQuery);
+        return model;
+    }
+    return model;
+}
+
+void UsersDBManager::closeConnection(){
+    users_db.close();
 }
 
 
