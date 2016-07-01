@@ -7,11 +7,13 @@
 
 #include <QMessageBox>
 #include <HeaderFiles/mainwindow.h>
+#include <HeaderFiles/homewindow.h>
 
 class UsersDBManager
 {
 private:
     QSqlDatabase users_db;
+    QSqlRelationalTableModel *model;
     QMessageBox msgBox;
 
 public:
@@ -21,7 +23,6 @@ public:
     bool checkLogin(QString uname, QString pwd);
 
     //CRUD operation relevant with NOTICE table
-    void displayNotice();
     bool insertNotice(QString createdTo, QString msg, QString createdBy);
     void checkNotice(int noticeID);
     void updateNotice(int noticeID, QString createdTo, QString msg, QString createdBy);
