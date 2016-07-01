@@ -2,7 +2,8 @@
 #define CREATEWINDOW_H
 
 #include <QDialog>
-#include <HeaderFiles/homewindow.h>
+//#include <HeaderFiles/homewindow.h>
+#include <HeaderFiles/usersdbmanager.h>
 
 namespace Ui {
     class CreateWindow;
@@ -12,7 +13,7 @@ class CreateWindow : public QDialog{
     Q_OBJECT
 
 public:
-    explicit CreateWindow(QWidget *parent = 0);
+    CreateWindow(QWidget *parent, const QString &username);
     virtual ~CreateWindow();
     bool createNotice();
     QString getCurrentEmpUserName();
@@ -25,7 +26,7 @@ private slots:
 
 private:
     Ui::CreateWindow *cwUI;
-
+    QString noticeFrom;
 };
 
 #endif // CREATEWINDOW_H
