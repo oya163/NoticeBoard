@@ -28,7 +28,6 @@ public:
 
 private slots:
     void on_loginButon_clicked();
-
     void on_exitButton_clicked();
 
 signals:
