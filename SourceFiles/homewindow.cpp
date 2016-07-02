@@ -55,6 +55,7 @@ void HomeWindow::displayNotice(){
     model = new QSqlTableModel(uih->tableView);
     model->setTable("NOTICE");
     model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+
     //Filter to display current month NOTICE only
     model->setFilter("strftime('%m',CREATEDON) = strftime('%m','now')");
     model->select();
@@ -65,8 +66,15 @@ void HomeWindow::displayNotice(){
     model->setHeaderData(4, Qt::Horizontal, tr("Date"));
     model->setHeaderData(5, Qt::Horizontal, tr("Read"));
 
+
     uih->tableView->setModel(model);
     uih->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
 
+    //Manually fitting the columns to QTableView
+    uih->tableView->setColumnWidth(0,30);
+    uih->tableView->setColumnWidth(2,250);
+    uih->tableView->setColumnWidth(4,150);
+    uih->tableView->setColumnWidth(5,30);
+    uih->tableView->horizontalHeader()->setStretchLastSection(true);
 
 }
