@@ -66,9 +66,10 @@ void HomeWindow::displayNotice(){
     model->setHeaderData(4, Qt::Horizontal, tr("Date"));
     model->setHeaderData(5, Qt::Horizontal, tr("Read"));
 
-
     uih->tableView->setModel(model);
     uih->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
+    uih->tableView->setEditTriggers(QAbstractItemView::DoubleClicked);
+
 
     //Manually fitting the columns to QTableView
     uih->tableView->setColumnWidth(0,30);
@@ -77,4 +78,24 @@ void HomeWindow::displayNotice(){
     uih->tableView->setColumnWidth(5,30);
     uih->tableView->horizontalHeader()->setStretchLastSection(true);
 
+    connect(uih->tableView, SIGNAL(entered(QModelIndex)), this, SLOT(on_updateButton_clicked(const QModelIndex &)));
+}
+
+void HomeWindow::on_updateButton_clicked(const QModelIndex &index)
+{
+    QMessageBox msgBox;
+    int row = index.row();
+    int col = index.column();
+
+    qDebug() << "Row = " << row << " Column = " << col << endl;
+
+    QString newValue = uih->tableView->model()->data(model->index(row,col)).toString();
+    qDebug() << newValue << endl;
+    model->setData(model->index(row,col),newValue);
+    if(model->submitAll()){
+        msgBox.setText("Data updated successfully");
+    }
+    else {
+        msgBox.setText("Error : " + model->lastError().text());
+    }
 }
