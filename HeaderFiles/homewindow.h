@@ -27,6 +27,8 @@ private slots:
     void on_logout_button_clicked();
     void on_createButton_clicked();
 
+    void on_updateButton_clicked(const QModelIndex &);
+
 private:
     Ui::HomeWindow *uih;
     QSqlTableModel *model;
