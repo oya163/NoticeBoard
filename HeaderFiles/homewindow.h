@@ -26,8 +26,7 @@ public slots:
 private slots:
     void on_logout_button_clicked();
     void on_createButton_clicked();
-
-    void on_updateButton_clicked(const QModelIndex &);
+    void update();
 
 private:
     Ui::HomeWindow *uih;
