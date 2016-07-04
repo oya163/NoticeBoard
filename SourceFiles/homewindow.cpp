@@ -36,20 +36,25 @@ void HomeWindow::on_createButton_clicked()
     create->show();
 }
 
-void HomeWindow::displayNotice(){
+
+void HomeWindow::openDBConn(){
+    QMessageBox msgBox;
+
     //Database connection
     QSqlDatabase users_db = QSqlDatabase::addDatabase("QSQLITE");
-    QString path = "/home/oyashi/Qt_Project/NoticeBoard/Databases/NoticeBoard.db";
-    users_db.setDatabaseName(path);
-
+    users_db.setDatabaseName(dbPath);
     if (!users_db.open())
     {
-       qDebug() << "Error: connection with database fail";
+       msgBox.setText("Error: connection with database fail");
+       msgBox.exec();
     }
-    else
-    {
-       qDebug() << "Database: connection ok FROM HOME WINDOW";
-    }
+}
+
+
+//Displays and Updates the QTableView and Database
+void HomeWindow::displayNotice(){
+    //Database Connection
+    HomeWindow::openDBConn();
 
     //Model Setup
     model = new QSqlTableModel(uih->tableView);
@@ -79,11 +84,13 @@ void HomeWindow::displayNotice(){
     uih->tableView->setColumnWidth(5,30);
     uih->tableView->horizontalHeader()->setStretchLastSection(true);
 
-    connect(uih->updateButton, SIGNAL(clicked()), this, SLOT(update()));
+    //Connect Press Buttons SIGNALS to the respective SLOTS
+    connect(uih->updateButton, SIGNAL(clicked()), this, SLOT(updateData()));
+    connect(uih->delButton, SIGNAL(clicked()), this, SLOT(removeData()));
 }
 
 
-void HomeWindow::update(){
+void HomeWindow::updateData(){
     QMessageBox msgBox;
     model->database().transaction();
     if(model->submitAll()){
@@ -93,10 +100,40 @@ void HomeWindow::update(){
     }
     else {
         model->database().rollback();
-        msgBox.warning(this, tr("Cached Table"),
+        msgBox.warning(this, tr("Notice Table"),
                              tr("The database reported an error: %1")
                              .arg(model->lastError().text()));
         msgBox.exec();
+    }
+}
+
+//Removes data from QTableView and Database as well
+void HomeWindow::removeData(){
+    QMessageBox msgBox;
+    QItemSelectionModel *selectModel = uih->tableView->selectionModel();
+    QModelIndexList indexList = selectModel->selectedIndexes();
+    QModelIndex index = indexList.at(0);
+    qDebug() << index.row();
+
+    model->database().transaction();
+    if(model->removeRow(index.row())){
+        qDebug() << "Remove successful" << endl;
+        if(model->submitAll()){
+            model->database().commit();
+            msgBox.setText("Data removed successfully");
+            msgBox.exec();
+        }
+        else {
+            model->database().rollback();
+            msgBox.warning(this, tr("Notice Table"),
+                                 tr("The database reported an error: %1")
+                                 .arg(model->lastError().text()));
+            msgBox.exec();
+        }
+
+    }
+    else{
+        qDebug() << "Remove unsuccessful" << endl;
     }
 }
 
