@@ -59,6 +59,8 @@ void HomeWindow::displayNotice(){
     //Filter to display current month NOTICE only
     model->setFilter("strftime('%m',CREATEDON) = strftime('%m','now')");
     model->select();
+
+    //Set Header for the model
     model->setHeaderData(0, Qt::Horizontal, tr("SN"));
     model->setHeaderData(1, Qt::Horizontal, tr("For"));
     model->setHeaderData(2, Qt::Horizontal, tr("Notice"));
@@ -66,10 +68,9 @@ void HomeWindow::displayNotice(){
     model->setHeaderData(4, Qt::Horizontal, tr("Date"));
     model->setHeaderData(5, Qt::Horizontal, tr("Read"));
 
+    //Qtableview setup according to the model
     uih->tableView->setModel(model);
     uih->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
-    uih->tableView->setEditTriggers(QAbstractItemView::DoubleClicked);
-
 
     //Manually fitting the columns to QTableView
     uih->tableView->setColumnWidth(0,30);
@@ -78,24 +79,25 @@ void HomeWindow::displayNotice(){
     uih->tableView->setColumnWidth(5,30);
     uih->tableView->horizontalHeader()->setStretchLastSection(true);
 
-    connect(uih->tableView, SIGNAL(entered(QModelIndex)), this, SLOT(on_updateButton_clicked(const QModelIndex &)));
+    connect(uih->updateButton, SIGNAL(clicked()), this, SLOT(update()));
 }
 
-void HomeWindow::on_updateButton_clicked(const QModelIndex &index)
-{
+
+void HomeWindow::update(){
     QMessageBox msgBox;
-    int row = index.row();
-    int col = index.column();
-
-    qDebug() << "Row = " << row << " Column = " << col << endl;
-
-    QString newValue = uih->tableView->model()->data(model->index(row,col)).toString();
-    qDebug() << newValue << endl;
-    model->setData(model->index(row,col),newValue);
+    model->database().transaction();
     if(model->submitAll()){
+        model->database().commit();
         msgBox.setText("Data updated successfully");
+        msgBox.exec();
     }
     else {
-        msgBox.setText("Error : " + model->lastError().text());
+        model->database().rollback();
+        msgBox.warning(this, tr("Cached Table"),
+                             tr("The database reported an error: %1")
+                             .arg(model->lastError().text()));
+        msgBox.exec();
     }
 }
+
+
