@@ -87,6 +87,7 @@ void HomeWindow::displayNotice(){
     //Connect Press Buttons SIGNALS to the respective SLOTS
     connect(uih->updateButton, SIGNAL(clicked()), this, SLOT(updateData()));
     connect(uih->delButton, SIGNAL(clicked()), this, SLOT(removeData()));
+    connect(uih->readButton,SIGNAL(clicked(bool)),this,SLOT(readData()));
 }
 
 
@@ -135,6 +136,38 @@ void HomeWindow::removeData(){
     else{
         qDebug() << "Remove unsuccessful" << endl;
     }
+}
+
+//Update selected Notice as READ
+void HomeWindow::readData(){
+    QMessageBox msgBox;
+    QItemSelectionModel *selectModel = uih->tableView->selectionModel();
+    QModelIndexList indexList = selectModel->selectedIndexes();
+    QModelIndex index = indexList.at(0);
+
+    QModelIndex newIdx = model->index(index.row(),5,QModelIndex());
+
+    qDebug() << newIdx.data().toString();
+
+    if(newIdx.data().toString() == "NO"){
+        model->setData(newIdx,QVariant(tr("YES")));
+        model->database().transaction();
+        if(model->submitAll()){
+            qDebug() << "NOTICE is READ" << endl;
+            model->database().commit();
+        }
+        else {
+            model->database().rollback();
+            msgBox.warning(this, tr("Notice Table"),
+                                 tr("The database reported an error: %1")
+                                 .arg(model->lastError().text()));
+            msgBox.exec();
+        }
+    }
+    else{
+        qDebug() << "NOTICE is already READ";
+    }
+
 }
 
 
