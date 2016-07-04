@@ -29,6 +29,7 @@ private slots:
     void on_createButton_clicked();
     void updateData();
     void removeData();
+    void readData();
 
 private:
     Ui::HomeWindow *uih;
