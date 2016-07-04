@@ -45,8 +45,8 @@ void HomeWindow::openDBConn(){
     users_db.setDatabaseName(dbPath);
     if (!users_db.open())
     {
-       msgBox.setText("Error: connection with database fail");
-       msgBox.exec();
+        msgBox.setText("Error: connection with database fail");
+        msgBox.exec();
     }
 }
 
@@ -106,8 +106,8 @@ void HomeWindow::updateData(){
     else {
         model->database().rollback();
         msgBox.warning(this, tr("Notice Table"),
-                             tr("The database reported an error: %1")
-                             .arg(model->lastError().text()));
+                       tr("The database reported an error: %1")
+                       .arg(model->lastError().text()));
         msgBox.exec();
     }
 }
@@ -131,8 +131,8 @@ void HomeWindow::removeData(){
         else {
             model->database().rollback();
             msgBox.warning(this, tr("Notice Table"),
-                                 tr("The database reported an error: %1")
-                                 .arg(model->lastError().text()));
+                           tr("The database reported an error: %1")
+                           .arg(model->lastError().text()));
             msgBox.exec();
         }
 
@@ -149,29 +149,41 @@ void HomeWindow::readData(){
     QModelIndexList indexList = selectModel->selectedIndexes();
     QModelIndex index = indexList.at(0);
 
-    QModelIndex newIdx = model->index(index.row(),5,QModelIndex());
+    //forIdx to fetch name of user FOR whom message is intended
+    QModelIndex forIdx = model->index(index.row(),1,QModelIndex());
 
-    qDebug() << newIdx.data().toString();
+    //statusIdx to fetch the READ status of new message
+    QModelIndex statusIdx = model->index(index.row(),5,QModelIndex());
 
-    if(newIdx.data().toString() == "NO"){
-        model->setData(newIdx,QVariant(tr("YES")));
-        model->database().transaction();
-        if(model->submitAll()){
-            qDebug() << "NOTICE is READ" << endl;
-            model->database().commit();
+    qDebug() << statusIdx.data().toString();
+
+    if(statusIdx.data().toString() == "NO"){
+        if(userName == forIdx.data().toString()){
+            model->setData(statusIdx,QVariant(tr("YES")));
+            model->database().transaction();
+            if(model->submitAll()){
+                qDebug() << "NOTICE is READ" << endl;
+                model->database().commit();
+            }
+            else {
+                model->database().rollback();
+                msgBox.warning(this, tr("Notice Table"),
+                               tr("The database reported an error: %1")
+                               .arg(model->lastError().text()));
+                msgBox.exec();
+            }
         }
-        else {
-            model->database().rollback();
-            msgBox.warning(this, tr("Notice Table"),
-                                 tr("The database reported an error: %1")
-                                 .arg(model->lastError().text()));
+        else{
+            msgBox.setText(tr("You are not %1").arg(forIdx.data().toString()));
             msgBox.exec();
         }
     }
     else{
         qDebug() << "NOTICE is already READ";
+        msgBox.setText("NOTICE is already READ");
+        msgBox.exec();
     }
-
 }
+
 
 
