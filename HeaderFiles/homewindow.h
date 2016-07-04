@@ -18,6 +18,7 @@ public:
     explicit HomeWindow(QWidget *parent = 0);
     virtual ~HomeWindow();
     void displayNotice();
+    void openDBConn();
 
 public slots:
     void setWelcomeLabel(QString uName);
@@ -26,12 +27,14 @@ public slots:
 private slots:
     void on_logout_button_clicked();
     void on_createButton_clicked();
-    void update();
+    void updateData();
+    void removeData();
 
 private:
     Ui::HomeWindow *uih;
     QSqlTableModel *model;
     QString userName;
+    QString dbPath = "/home/oyashi/Qt_Project/NoticeBoard/Databases/NoticeBoard.db";
 
 };
 
