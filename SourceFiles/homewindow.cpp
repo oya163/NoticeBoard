@@ -77,6 +77,10 @@ void HomeWindow::displayNotice(){
     uih->tableView->setModel(model);
     uih->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
 
+    //Sorting in descending order in order to display latest post first
+    uih->tableView->setSortingEnabled(true);
+    uih->tableView->sortByColumn(0,Qt::DescendingOrder);
+
     //Manually fitting the columns to QTableView
     uih->tableView->setColumnWidth(0,30);
     uih->tableView->setColumnWidth(2,250);
