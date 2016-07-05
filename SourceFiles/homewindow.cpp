@@ -123,28 +123,37 @@ void HomeWindow::removeData(){
     QItemSelectionModel *selectModel = uih->tableView->selectionModel();
     QModelIndexList indexList = selectModel->selectedIndexes();
     QModelIndex index = indexList.at(0);
-    qDebug() << index.row();
+
+    //fromIdx to fetch name of user FROM whom message is intended
+    QModelIndex fromIdx = model->index(index.row(),3,QModelIndex());
 
     model->database().transaction();
-    if(model->removeRow(index.row())){
-        qDebug() << "Remove successful" << endl;
-        if(model->submitAll()){
-            model->database().commit();
-            msgBox.setText("Data removed successfully");
-            msgBox.exec();
-        }
-        else {
-            model->database().rollback();
-            msgBox.warning(this, tr("Notice Table"),
-                           tr("The database reported an error: %1")
-                           .arg(model->lastError().text()));
-            msgBox.exec();
-        }
+    if(fromIdx.data().toString() == userName){
+        if(model->removeRow(index.row())){
+            qDebug() << "Remove successful" << endl;
+            if(model->submitAll()){
+                model->database().commit();
+                msgBox.setText("Data removed successfully");
+                msgBox.exec();
+            }
+            else {
+                model->database().rollback();
+                msgBox.warning(this, tr("Notice Table"),
+                               tr("The database reported an error: %1")
+                               .arg(model->lastError().text()));
+                msgBox.exec();
+            }
 
+        }
+        else{
+            qDebug() << "Remove unsuccessful" << endl;
+        }
     }
     else{
-        qDebug() << "Remove unsuccessful" << endl;
+        msgBox.setText("You are not authorized to remove this record");
+        msgBox.exec();
     }
+
 }
 
 //Update selected Notice as READ
