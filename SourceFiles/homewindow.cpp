@@ -39,20 +39,29 @@ void HomeWindow::setWelcomeLabel(QString uName){
 
 void HomeWindow::on_createButton_clicked()
 {
-    QString un = userName;
-
-    //Uncomment below lines to display new Create Window
-    //This has become obsolete now
+//    Uncomment below lines to display new Create Window
+//    However, below lines has become obsolete now
+//    QString un = userName;
 //    CreateWindow *create = new CreateWindow(0,un);
 //    create->show();
 
+    //Inserts new row in the model
     model->insertRow(0,QModelIndex());
+
+    //Goes to insertData() only after records are written on model
+    connect(uih->tableView,SIGNAL(entered(QModelIndex)),this,SLOT(insertData()));
+}
+
+void HomeWindow::insertData(){
 
     QSqlRecord newRecord = model->record();
 
-    newRecord.setValue(1,QVariant("OYESH"));
-    newRecord.setValue(2,QVariant("LOVE"));
-    newRecord.setValue(3,QVariant("ANU1"));
+    QModelIndex forIdx = model->index(0,1,QModelIndex());
+    newRecord.setValue(1,forIdx.data());
+
+    QModelIndex msgIndex = model->index(0,2,QModelIndex());
+    newRecord.setValue(2,msgIndex.data());
+    newRecord.setValue(3,QVariant(userName));
 
     //For the field containing default values, it should be set FALSE
     //http://doc.qt.io/qt-5/qsqltablemodel.html#setRecord
@@ -70,8 +79,6 @@ void HomeWindow::on_createButton_clicked()
         model->database().commit();
         qDebug() << "Successfully inserted";
     }
-
-    //connect(uih->tableView,SIGNAL(entered(QModelIndex)),this,SLOT(createData()));
 }
 
 //Connects the database
