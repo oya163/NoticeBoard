@@ -9,6 +9,9 @@ HomeWindow::HomeWindow(QWidget *parent) :
 {
     uih->setupUi(this);
 
+    //Database Connection
+    openDBConn();
+
     displayNotice();
 }
 
@@ -32,11 +35,13 @@ void HomeWindow::setWelcomeLabel(QString uName){
 void HomeWindow::on_createButton_clicked()
 {
     QString un = userName;
-    CreateWindow *create = new CreateWindow(0,un);
-    create->show();
+//    CreateWindow *create = new CreateWindow(0,un);
+//    create->show();
+    model->insertRow(0,QModelIndex());
+    connect(uih->tableView,SIGNAL(entered(QModelIndex)),this,SLOT(createData()));
 }
 
-
+//Connects the database
 void HomeWindow::openDBConn(){
     QMessageBox msgBox;
 
@@ -50,12 +55,13 @@ void HomeWindow::openDBConn(){
     }
 }
 
+//Insert data from newly created row into database
+void HomeWindow::createData(){
+
+}
 
 //Displays and Updates the QTableView and Database
 void HomeWindow::displayNotice(){
-    //Database Connection
-    HomeWindow::openDBConn();
-
     //Model Setup
     model = new QSqlTableModel(uih->tableView);
     model->setTable("NOTICE");
@@ -80,7 +86,6 @@ void HomeWindow::displayNotice(){
     //Sorting in descending order in order to display latest post first
     uih->tableView->setSortingEnabled(true);
     uih->tableView->sortByColumn(0,Qt::DescendingOrder);
-
     //Manually fitting the columns to QTableView
     uih->tableView->setColumnWidth(0,30);
     uih->tableView->setColumnWidth(2,250);
@@ -91,7 +96,7 @@ void HomeWindow::displayNotice(){
     //Connect Press Buttons SIGNALS to the respective SLOTS
     connect(uih->updateButton, SIGNAL(clicked()), this, SLOT(updateData()));
     connect(uih->delButton, SIGNAL(clicked()), this, SLOT(removeData()));
-    connect(uih->readButton,SIGNAL(clicked(bool)),this,SLOT(readData()));
+    connect(uih->readButton,SIGNAL(clicked()),this,SLOT(readData()));
 }
 
 
