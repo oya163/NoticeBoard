@@ -28,6 +28,7 @@ private slots:
     void on_logout_button_clicked();
     void on_createButton_clicked();
     void createData();
+    void insertData();
     void updateData();
     void removeData();
     void readData();
