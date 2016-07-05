@@ -13,6 +13,11 @@ HomeWindow::HomeWindow(QWidget *parent) :
     openDBConn();
 
     displayNotice();
+
+    //Connect Press Buttons SIGNALS to the respective SLOTS
+    connect(uih->updateButton, SIGNAL(clicked()), this, SLOT(updateData()));
+    connect(uih->delButton, SIGNAL(clicked()), this, SLOT(removeData()));
+    connect(uih->readButton,SIGNAL(clicked()),this,SLOT(readData()));
 }
 
 HomeWindow::~HomeWindow()
@@ -38,7 +43,31 @@ void HomeWindow::on_createButton_clicked()
 //    CreateWindow *create = new CreateWindow(0,un);
 //    create->show();
     model->insertRow(0,QModelIndex());
-    connect(uih->tableView,SIGNAL(entered(QModelIndex)),this,SLOT(createData()));
+
+    QSqlRecord newRecord = model->record();
+
+    newRecord.setValue(1,QVariant("OYESH"));
+    newRecord.setValue(2,QVariant("OYESH"));
+    newRecord.setValue(3,QVariant("OYESH"));
+    newRecord.setValue(4,QVariant("2016-07-05 06:36:29"));
+    newRecord.setValue(5,QVariant("NO"));
+
+    newRecord.insert(0,newRecord.field("SN"));
+    newRecord.insert(1,newRecord.field("CREATEDTO"));
+    newRecord.insert(2,newRecord.field("MESSAGE"));
+    newRecord.insert(3,newRecord.field("CREATEDBY"));
+    newRecord.insert(4,newRecord.field("CREATEDON"));
+    newRecord.insert(5,newRecord.field("ISREAD"));
+
+    model->setRecord(0,newRecord);
+
+    model->database().transaction();
+    if(model->submitAll()){
+        model->database().commit();
+        qDebug() << "Successfully inserted";
+    }
+
+    //connect(uih->tableView,SIGNAL(entered(QModelIndex)),this,SLOT(createData()));
 }
 
 //Connects the database
@@ -92,11 +121,6 @@ void HomeWindow::displayNotice(){
     uih->tableView->setColumnWidth(4,150);
     uih->tableView->setColumnWidth(5,30);
     uih->tableView->horizontalHeader()->setStretchLastSection(true);
-
-    //Connect Press Buttons SIGNALS to the respective SLOTS
-    connect(uih->updateButton, SIGNAL(clicked()), this, SLOT(updateData()));
-    connect(uih->delButton, SIGNAL(clicked()), this, SLOT(removeData()));
-    connect(uih->readButton,SIGNAL(clicked()),this,SLOT(readData()));
 }
 
 
