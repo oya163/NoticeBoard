@@ -40,24 +40,28 @@ void HomeWindow::setWelcomeLabel(QString uName){
 void HomeWindow::on_createButton_clicked()
 {
     QString un = userName;
+
+    //Uncomment below lines to display new Create Window
+    //This has become obsolete now
 //    CreateWindow *create = new CreateWindow(0,un);
 //    create->show();
+
     model->insertRow(0,QModelIndex());
 
     QSqlRecord newRecord = model->record();
 
     newRecord.setValue(1,QVariant("OYESH"));
-    newRecord.setValue(2,QVariant("OYESH"));
-    newRecord.setValue(3,QVariant("OYESH"));
-    newRecord.setValue(4,QVariant("2016-07-05 06:36:29"));
-    newRecord.setValue(5,QVariant("NO"));
+    newRecord.setValue(2,QVariant("LOVE"));
+    newRecord.setValue(3,QVariant("ANU1"));
 
-    newRecord.insert(0,newRecord.field("SN"));
-    newRecord.insert(1,newRecord.field("CREATEDTO"));
-    newRecord.insert(2,newRecord.field("MESSAGE"));
-    newRecord.insert(3,newRecord.field("CREATEDBY"));
-    newRecord.insert(4,newRecord.field("CREATEDON"));
-    newRecord.insert(5,newRecord.field("ISREAD"));
+    //For the field containing default values, it should be set FALSE
+    //http://doc.qt.io/qt-5/qsqltablemodel.html#setRecord
+    newRecord.setGenerated(4,false);
+    newRecord.setGenerated(5,false);
+
+    //I was doing like this previously, just commented out if in case
+//    newRecord.setValue(4,QVariant(newRecord.field("CREATEDON").defaultValue()));
+//    newRecord.setValue(5,QVariant(newRecord.field("ISREAD").defaultValue()));
 
     model->setRecord(0,newRecord);
 
