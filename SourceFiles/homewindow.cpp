@@ -160,9 +160,6 @@ void HomeWindow::updateData(){
         msgBox.setText("You are not authorized to update this");
         msgBox.exec();
     }
-
-    disconnect(model,SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(updateData(const QModelIndex &)));
-
 }
 
 //Removes data from QTableView and Database as well
