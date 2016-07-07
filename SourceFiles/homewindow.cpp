@@ -25,6 +25,20 @@ HomeWindow::~HomeWindow()
     delete uih;
 }
 
+//Connects the database
+void HomeWindow::openDBConn(){
+    QMessageBox msgBox;
+
+    //Database connection
+    QSqlDatabase users_db = QSqlDatabase::addDatabase("QSQLITE");
+    users_db.setDatabaseName(dbPath);
+    if (!users_db.open())
+    {
+        msgBox.setText("Error: connection with database fail");
+        msgBox.exec();
+    }
+}
+
 void HomeWindow::on_logout_button_clicked()
 {
     MainWindow *mw = new MainWindow();
@@ -47,14 +61,15 @@ void HomeWindow::on_createButton_clicked()
 
     //Inserts new row in the model
     model->insertRow(0,QModelIndex());
+//    insertData();
 
     //Goes to insertData() only after records are written on model
-    connect(uih->tableView,SIGNAL(entered(QModelIndex)),this,SLOT(insertData()));
+//    connect(uih->tableView,SIGNAL(entered(QModelIndex)),this,SLOT(insertData()));
 }
 
 //Inserts new row on model and into database
 void HomeWindow::insertData(){
-    disconnect(uih->tableView,SIGNAL(entered(QModelIndex)),this,SLOT(insertData()));
+    //disconnect(uih->tableView,SIGNAL(entered(QModelIndex)),this,SLOT(insertData()));
 
     QSqlRecord newRecord = model->record();
 
@@ -78,20 +93,6 @@ void HomeWindow::insertData(){
         }
     }
 
-}
-
-//Connects the database
-void HomeWindow::openDBConn(){
-    QMessageBox msgBox;
-
-    //Database connection
-    QSqlDatabase users_db = QSqlDatabase::addDatabase("QSQLITE");
-    users_db.setDatabaseName(dbPath);
-    if (!users_db.open())
-    {
-        msgBox.setText("Error: connection with database fail");
-        msgBox.exec();
-    }
 }
 
 //Displays and Updates the QTableView and Database
