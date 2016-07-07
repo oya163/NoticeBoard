@@ -15,7 +15,7 @@ HomeWindow::HomeWindow(QWidget *parent) :
     displayNotice();
 
     //Connect Press Buttons SIGNALS to the respective SLOTS
-
+    connect(uih->updateButton,SIGNAL(clicked()), this, SLOT(updateData(const QModelIndex &)));
     connect(uih->delButton, SIGNAL(clicked()), this, SLOT(removeData()));
     connect(uih->readButton,SIGNAL(clicked()),this,SLOT(readData()));
 }
@@ -49,7 +49,7 @@ void HomeWindow::on_createButton_clicked()
     model->insertRow(0,QModelIndex());
 
     //Goes to insertData() only after records are written on model
-//    connect(uih->tableView,SIGNAL(entered(QModelIndex)),this,SLOT(insertData()));
+    connect(uih->tableView,SIGNAL(entered(QModelIndex)),this,SLOT(insertData()));
 }
 
 //Inserts new row on model and into database
@@ -217,7 +217,7 @@ void HomeWindow::readData(){
 
     qDebug() << statusIdx.data().toString();
 
-    if(statusIdx.data().toString() == "NO"){
+    if(statusIdx.data().toString() != "YES"){
         if(userName == forIdx.data().toString()){
             model->setData(statusIdx,QVariant(tr("YES")));
             model->database().transaction();
@@ -243,12 +243,4 @@ void HomeWindow::readData(){
         msgBox.setText("NOTICE is already READ");
         msgBox.exec();
     }
-}
-
-
-
-
-void HomeWindow::on_updateButton_clicked()
-{
-    connect(model,SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(updateData(const QModelIndex &)));
 }
