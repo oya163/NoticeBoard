@@ -15,7 +15,7 @@ HomeWindow::HomeWindow(QWidget *parent) :
     displayNotice();
 
     //Connect Press Buttons SIGNALS to the respective SLOTS
-    connect(uih->updateButton,SIGNAL(clicked()), this, SLOT(updateData(const QModelIndex &)));
+    connect(uih->updateButton,SIGNAL(clicked()), this, SLOT(updateData()));
     connect(uih->delButton, SIGNAL(clicked()), this, SLOT(removeData()));
     connect(uih->readButton,SIGNAL(clicked()),this,SLOT(readData()));
 }
@@ -131,10 +131,12 @@ void HomeWindow::displayNotice(){
 }
 
 //Updates data changed on model to Database
-void HomeWindow::updateData(const QModelIndex &index){
-
-
+void HomeWindow::updateData(){
     QMessageBox msgBox;
+
+    QItemSelectionModel *selectModel = uih->tableView->selectionModel();
+    QModelIndexList indexList = selectModel->selectedIndexes();
+    QModelIndex index = indexList.at(0);
 
     //fromIdx to fetch name of user FROM whom message is intended
     QModelIndex fromIdx = model->index(index.row(),3,QModelIndex());
