@@ -15,7 +15,7 @@ HomeWindow::HomeWindow(QWidget *parent) :
     displayNotice();
 
     //Connect Press Buttons SIGNALS to the respective SLOTS
-    connect(uih->updateButton, SIGNAL(clicked()), this, SLOT(updateData()));
+
     connect(uih->delButton, SIGNAL(clicked()), this, SLOT(removeData()));
     connect(uih->readButton,SIGNAL(clicked()),this,SLOT(readData()));
 }
@@ -49,10 +49,12 @@ void HomeWindow::on_createButton_clicked()
     model->insertRow(0,QModelIndex());
 
     //Goes to insertData() only after records are written on model
-    connect(uih->tableView,SIGNAL(entered(QModelIndex)),this,SLOT(insertData()));
+//    connect(uih->tableView,SIGNAL(entered(QModelIndex)),this,SLOT(insertData()));
 }
 
+//Inserts new row on model and into database
 void HomeWindow::insertData(){
+    disconnect(uih->tableView,SIGNAL(entered(QModelIndex)),this,SLOT(insertData()));
 
     QSqlRecord newRecord = model->record();
 
@@ -61,24 +63,21 @@ void HomeWindow::insertData(){
 
     QModelIndex msgIndex = model->index(0,2,QModelIndex());
     newRecord.setValue(2,msgIndex.data());
-    newRecord.setValue(3,QVariant(userName));
 
-    //For the field containing default values, it should be set FALSE
-    //http://doc.qt.io/qt-5/qsqltablemodel.html#setRecord
+    //Below section will set the default values
+    newRecord.setValue(3,QVariant(userName));
     newRecord.setGenerated(4,false);
     newRecord.setGenerated(5,false);
 
-    //I was doing like this previously, just commented out if in case
-//    newRecord.setValue(4,QVariant(newRecord.field("CREATEDON").defaultValue()));
-//    newRecord.setValue(5,QVariant(newRecord.field("ISREAD").defaultValue()));
-
     model->setRecord(0,newRecord);
-
-    model->database().transaction();
-    if(model->submitAll()){
-        model->database().commit();
-        qDebug() << "Successfully inserted";
+    if(model->insertRecord(0,newRecord)){
+        model->database().transaction();
+        if(model->submitAll()){
+            model->database().commit();
+            qDebug() << "Successfully inserted";
+        }
     }
+
 }
 
 //Connects the database
@@ -93,11 +92,6 @@ void HomeWindow::openDBConn(){
         msgBox.setText("Error: connection with database fail");
         msgBox.exec();
     }
-}
-
-//Insert data from newly created row into database
-void HomeWindow::createData(){
-
 }
 
 //Displays and Updates the QTableView and Database
@@ -132,24 +126,41 @@ void HomeWindow::displayNotice(){
     uih->tableView->setColumnWidth(4,150);
     uih->tableView->setColumnWidth(5,30);
     uih->tableView->horizontalHeader()->setStretchLastSection(true);
+
+    emit (model,SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)));
 }
 
+//Updates data changed on model to Database
+void HomeWindow::updateData(const QModelIndex &index){
 
-void HomeWindow::updateData(){
+
     QMessageBox msgBox;
+
+    //fromIdx to fetch name of user FROM whom message is intended
+    QModelIndex fromIdx = model->index(index.row(),3,QModelIndex());
+
     model->database().transaction();
-    if(model->submitAll()){
-        model->database().commit();
-        msgBox.setText("Data updated successfully");
+    if(fromIdx.data().toString() == userName){
+        if(model->submitAll()){
+            model->database().commit();
+            msgBox.setText("Data updated successfully");
+            msgBox.exec();
+        }
+        else {
+            model->database().rollback();
+            msgBox.warning(this, tr("Notice Table"),
+                           tr("The database reported an error: %1")
+                           .arg(model->lastError().text()));
+            msgBox.exec();
+        }
+    }
+    else{
+        msgBox.setText("You are not authorized to update this");
         msgBox.exec();
     }
-    else {
-        model->database().rollback();
-        msgBox.warning(this, tr("Notice Table"),
-                       tr("The database reported an error: %1")
-                       .arg(model->lastError().text()));
-        msgBox.exec();
-    }
+
+    disconnect(model,SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(updateData(const QModelIndex &)));
+
 }
 
 //Removes data from QTableView and Database as well
@@ -236,3 +247,8 @@ void HomeWindow::readData(){
 
 
 
+
+void HomeWindow::on_updateButton_clicked()
+{
+    connect(model,SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(updateData(const QModelIndex &)));
+}
