@@ -27,6 +27,7 @@ HomeWindow::HomeWindow(QWidget *parent) :
 HomeWindow::~HomeWindow()
 {
     delete uih;
+    delete selectModel;
 }
 
 //Connects the database
@@ -114,7 +115,7 @@ void HomeWindow::displayNotice(){
     model->setHeaderData(1, Qt::Horizontal, tr("For"));
     model->setHeaderData(2, Qt::Horizontal, tr("Notice"));
     model->setHeaderData(3, Qt::Horizontal, tr("From"));
-    model->setHeaderData(4, Qt::Horizontal, tr("Date"));
+    model->setHeaderData(4, Qt::Horizontal, tr("Date Created"));
     model->setHeaderData(5, Qt::Horizontal, tr("Read"));
 
     //Qtableview setup according to the model
@@ -136,32 +137,32 @@ void HomeWindow::displayNotice(){
 void HomeWindow::updateData(){
     QMessageBox msgBox;
 
-    QItemSelectionModel *selectModel = uih->tableView->selectionModel();
+    //For the currently selected item
+    selectModel = uih->tableView->selectionModel();
     QModelIndexList indexList = selectModel->selectedIndexes();
     QModelIndex index = indexList.at(0);
+
+    //Generates the new record in the newly inserted row
+    QSqlRecord newRecord = model->record();
+
+    QModelIndex forIdx = model->index(0,1,QModelIndex());
+    newRecord.setValue(1,forIdx.data());
+
+    QModelIndex msgIndex = model->index(0,2,QModelIndex());
+    newRecord.setValue(2,msgIndex.data());
+
+    //Below section will set the default values
+    newRecord.setValue(3,QVariant(userName));
+    newRecord.setGenerated(4,false);
+    newRecord.setGenerated(5,false);
 
     //fromIdx to fetch name of user FROM whom message is intended
     QModelIndex fromIdx = model->index(index.row(),3,QModelIndex());
 
     if(fromIdx.data().toString().isEmpty()){
-        QSqlRecord newRecord = model->record();
-
-        QModelIndex forIdx = model->index(0,1,QModelIndex());
-        newRecord.setValue(1,forIdx.data());
-
-        QModelIndex msgIndex = model->index(0,2,QModelIndex());
-        newRecord.setValue(2,msgIndex.data());
-
-        //Below section will set the default values
-        newRecord.setGenerated(4,false);
-        newRecord.setGenerated(5,false);
-
-        newRecord.setValue(3,QVariant(userName));
-
-        model->setRecord(0,newRecord);
-        if(model->insertRecord(0,newRecord)){
-            model->database().transaction();
+        if(model->setRecord(0,newRecord)){
             if(model->submitAll()){
+                model->database().transaction();
                 model->database().commit();
                 qDebug() << "Successfully inserted";
                 newRecord.clear();
@@ -192,7 +193,7 @@ void HomeWindow::updateData(){
 //Removes data from QTableView and Database as well
 void HomeWindow::removeData(){
     QMessageBox msgBox;
-    QItemSelectionModel *selectModel = uih->tableView->selectionModel();
+    selectModel = uih->tableView->selectionModel();
     QModelIndexList indexList = selectModel->selectedIndexes();
     QModelIndex index = indexList.at(0);
 
@@ -225,13 +226,12 @@ void HomeWindow::removeData(){
         msgBox.setText("You are not authorized to remove this record");
         msgBox.exec();
     }
-
 }
 
 //Update selected Notice as READ
 void HomeWindow::readData(){
     QMessageBox msgBox;
-    QItemSelectionModel *selectModel = uih->tableView->selectionModel();
+    selectModel = uih->tableView->selectionModel();
     QModelIndexList indexList = selectModel->selectedIndexes();
     QModelIndex index = indexList.at(0);
 
