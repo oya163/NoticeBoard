@@ -72,6 +72,7 @@ void HomeWindow::on_createButton_clicked()
 }
 
 //Inserts new row on model and into database
+//This section is not in use
 void HomeWindow::insertData(){
     //disconnect(uih->tableView,SIGNAL(entered(QModelIndex)),this,SLOT(insertData()));
 
