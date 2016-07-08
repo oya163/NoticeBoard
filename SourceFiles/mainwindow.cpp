@@ -65,8 +65,6 @@ void MainWindow::on_loginButon_clicked()
     }
 }
 
-
-
 void MainWindow::on_exitButton_clicked()
 {
     QApplication::quit();
