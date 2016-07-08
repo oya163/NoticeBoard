@@ -1,3 +1,6 @@
+//Create the QSqlRecord updateRecord like in insertData()
+//in updateData() to update the newly created row
+
 #include "HeaderFiles/homewindow.h"
 #include "ui_homewindow.h"
 #include "HeaderFiles/createwindow.h"
@@ -8,6 +11,7 @@ HomeWindow::HomeWindow(QWidget *parent) :
     uih(new Ui::HomeWindow)
 {
     uih->setupUi(this);
+    this->setWindowState(Qt::WindowMaximized);
 
     //Database Connection
     openDBConn();
@@ -61,7 +65,6 @@ void HomeWindow::on_createButton_clicked()
 
     //Inserts new row in the model
     model->insertRow(0,QModelIndex());
-//    insertData();
 
     //Goes to insertData() only after records are written on model
 //    connect(uih->tableView,SIGNAL(entered(QModelIndex)),this,SLOT(insertData()));
@@ -122,13 +125,11 @@ void HomeWindow::displayNotice(){
     uih->tableView->setSortingEnabled(true);
     uih->tableView->sortByColumn(0,Qt::DescendingOrder);
     //Manually fitting the columns to QTableView
-    uih->tableView->setColumnWidth(0,30);
-    uih->tableView->setColumnWidth(2,250);
+    uih->tableView->setColumnWidth(0,50);
+    uih->tableView->setColumnWidth(2,850);
     uih->tableView->setColumnWidth(4,150);
     uih->tableView->setColumnWidth(5,30);
     uih->tableView->horizontalHeader()->setStretchLastSection(true);
-
-    emit (model,SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)));
 }
 
 //Updates data changed on model to Database
@@ -142,9 +143,34 @@ void HomeWindow::updateData(){
     //fromIdx to fetch name of user FROM whom message is intended
     QModelIndex fromIdx = model->index(index.row(),3,QModelIndex());
 
-    model->database().transaction();
-    if(fromIdx.data().toString() == userName){
+    if(fromIdx.data().toString().isEmpty()){
+        QSqlRecord newRecord = model->record();
+
+        QModelIndex forIdx = model->index(0,1,QModelIndex());
+        newRecord.setValue(1,forIdx.data());
+
+        QModelIndex msgIndex = model->index(0,2,QModelIndex());
+        newRecord.setValue(2,msgIndex.data());
+
+        //Below section will set the default values
+        newRecord.setGenerated(4,false);
+        newRecord.setGenerated(5,false);
+
+        newRecord.setValue(3,QVariant(userName));
+
+        model->setRecord(0,newRecord);
+        if(model->insertRecord(0,newRecord)){
+            model->database().transaction();
+            if(model->submitAll()){
+                model->database().commit();
+                qDebug() << "Successfully inserted";
+                newRecord.clear();
+            }
+        }
+    }
+    else if(fromIdx.data().toString() == userName){
         if(model->submitAll()){
+            model->database().transaction();
             model->database().commit();
             msgBox.setText("Data updated successfully");
             msgBox.exec();
