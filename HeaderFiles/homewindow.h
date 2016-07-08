@@ -35,6 +35,7 @@ private slots:
 private:
     Ui::HomeWindow *uih;
     QSqlTableModel *model;
+    QItemSelectionModel *selectModel;
     QString userName;
     QString dbPath = "/home/oyashi/Qt_Project/NoticeBoard/Databases/NoticeBoard.db";
 
