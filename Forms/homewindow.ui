@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>879</width>
-    <height>762</height>
+    <width>1550</width>
+    <height>865</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <rect>
       <x>20</x>
       <y>10</y>
-      <width>841</width>
+      <width>1521</width>
       <height>71</height>
      </rect>
     </property>
@@ -47,7 +47,7 @@
     <widget class="QPushButton" name="logout_button">
      <property name="geometry">
       <rect>
-       <x>740</x>
+       <x>1400</x>
        <y>40</y>
        <width>99</width>
        <height>27</height>
@@ -66,7 +66,7 @@
     <widget class="QPushButton" name="myProfile_button">
      <property name="geometry">
       <rect>
-       <x>740</x>
+       <x>1400</x>
        <y>10</y>
        <width>99</width>
        <height>27</height>
@@ -85,8 +85,8 @@
     <widget class="QLabel" name="wcLabel">
      <property name="geometry">
       <rect>
-       <x>450</x>
-       <y>30</y>
+       <x>1090</x>
+       <y>20</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -103,8 +103,8 @@
     <widget class="QLabel" name="wcName">
      <property name="geometry">
       <rect>
-       <x>540</x>
-       <y>30</y>
+       <x>1180</x>
+       <y>20</y>
        <width>181</width>
        <height>31</height>
       </rect>
@@ -122,7 +122,7 @@
    <widget class="QGroupBox" name="menuBox">
     <property name="geometry">
      <rect>
-      <x>760</x>
+      <x>1420</x>
       <y>110</y>
       <width>101</width>
       <height>161</height>
@@ -213,8 +213,8 @@
      <rect>
       <x>30</x>
       <y>100</y>
-      <width>701</width>
-      <height>611</height>
+      <width>1351</width>
+      <height>731</height>
      </rect>
     </property>
     <property name="title">
@@ -225,8 +225,8 @@
       <rect>
        <x>0</x>
        <y>30</y>
-       <width>701</width>
-       <height>581</height>
+       <width>1351</width>
+       <height>701</height>
       </rect>
      </property>
     </widget>
